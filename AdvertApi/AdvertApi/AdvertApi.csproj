@@ -13,9 +13,11 @@
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Controllers\HealthChecks\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.105.33" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.HealthChecks" Version="1.0.0" />
   </ItemGroup>
 </Project>
