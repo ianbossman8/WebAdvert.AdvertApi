@@ -4,6 +4,7 @@ using AdvertApi.Models;
 using AutoMapper;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.Model;
 
 namespace AdvertApi.Services
 {
@@ -32,6 +33,16 @@ namespace AdvertApi.Services
             }
 
             return dbModel.Id;
+        }
+
+        public async Task<bool> CheckHealthAsync()
+        {
+            using (AmazonDynamoDBClient client = new AmazonDynamoDBClient())
+            {
+                DescribeTableResponse tableData = await client.DescribeTableAsync("Adverts");
+
+                return string.Compare(tableData.Table.TableStatus, "active", true) == 0;
+            }
         }
 
         public async Task<bool> Confirm(ConfirmAdvertModel model)

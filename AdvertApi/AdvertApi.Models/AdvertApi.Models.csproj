@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Ian</Authors>
+    <Owners>Ian</Owners>
+    <PackageProjectUrl>https://github.com/ianchan035/WebAdvert.AdvertApi</PackageProjectUrl>
+    <Description>AdvertApi Models</Description>
+    <PackageId>Ian.AdvertApi.Models</PackageId>
   </PropertyGroup>
 
 </Project>
