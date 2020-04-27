@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AdvertApi.Services;
-using Microsoft.Extensions.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace AdvertApi.Controllers.HealthChecks
+namespace AdvertApi.HealthChecks
 {
     public class StorageHealthCheck : IHealthCheck
     {
@@ -15,11 +14,11 @@ namespace AdvertApi.Controllers.HealthChecks
             _storageService = storageService;
         }
 
-        public async ValueTask<IHealthCheckResult> CheckAsync(CancellationToken cancellationToken = default)
+        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             bool isStorageOk = await _storageService.CheckHealthAsync();
 
-            return HealthCheckResult.FromStatus(isStorageOk ? CheckStatus.Healthy : CheckStatus.Unhealthy, "");
+            return new HealthCheckResult(isStorageOk ? HealthStatus.Healthy : HealthStatus.Unhealthy);
         }
     }
 }

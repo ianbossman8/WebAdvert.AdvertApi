@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using AdvertApi.Services;
-using AdvertApi.Controllers.HealthChecks;
+using AdvertApi.HealthChecks;
 
 namespace AdvertApi
 {
@@ -23,11 +23,8 @@ namespace AdvertApi
         {
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IAdvertStorageService, DynamoDBAdvertStorage>();
+            services.AddHealthChecks().AddCheck<StorageHealthCheck>("Storage");
             services.AddControllers();
-            services.AddHealthChecks(checks =>
-            {
-                checks.AddCheck<StorageHealthCheck>("Storage", new System.TimeSpan(0, 1, 0));
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
