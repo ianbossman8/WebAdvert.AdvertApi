@@ -9,4 +9,7 @@
     <PackageId>Ian.AdvertApi.Models</PackageId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Messages\" />
+  </ItemGroup>
 </Project>
