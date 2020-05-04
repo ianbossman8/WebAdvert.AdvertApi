@@ -4,7 +4,7 @@ using Amazon.DynamoDBv2.DataModel;
 
 namespace AdvertApi.Services
 {
-    [DynamoDBTable("Advert")]
+    [DynamoDBTable("Adverts")]
     public class AdvertDbModel
     {
         [DynamoDBHashKey]
@@ -20,7 +20,10 @@ namespace AdvertApi.Services
         public double Price { get; set; }
 
         [DynamoDBProperty]
-        public int MyProperty { get; set; }
+        public string FilePath { get; set; }
+
+        [DynamoDBProperty]
+        public string UserName { get; set; }
 
         [DynamoDBProperty]
         public DateTime CreationDateTime { get; set; }

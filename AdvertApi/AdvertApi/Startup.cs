@@ -23,6 +23,7 @@ namespace AdvertApi
         {
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient<IAdvertStorageService, DynamoDBAdvertStorage>();
+            services.AddTransient<StorageHealthCheck>();
             services.AddHealthChecks().AddCheck<StorageHealthCheck>("Storage");
             services.AddControllers();
         }

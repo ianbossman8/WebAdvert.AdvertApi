@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AdvertApi.Models;
 using AdvertApi.Models.Messages;
@@ -9,6 +8,7 @@ using Amazon.SimpleNotificationService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using AutoMapper;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,8 +16,7 @@ namespace AdvertApi.Controllers
 {
     [ApiController]
     [Route("api/v1/adverts")]
-
-
+    [Produces("application/json")]
     public class Advert : Controller
     {
         private readonly IAdvertStorageService _advertStorageService;
@@ -32,7 +31,7 @@ namespace AdvertApi.Controllers
 
         [HttpPost]
         [Route("Create")]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(201, Type=typeof(CreateAdvertResponse))]
         public async Task<IActionResult> Create(AdvertModel model)
         {
@@ -55,7 +54,7 @@ namespace AdvertApi.Controllers
 
         [HttpPut]
         [Route("Confirm")]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Confirm(ConfirmAdvertModel model)
         {
@@ -70,6 +69,7 @@ namespace AdvertApi.Controllers
             }
             catch (Exception exception)
             {
+                await testMessage(exception.Message);
                 return StatusCode(500, exception.Message);
             }
 
@@ -78,19 +78,31 @@ namespace AdvertApi.Controllers
 
         private async Task RaiseAdvertConfirmedMessage(ConfirmAdvertModel model)
         {
-            string topicArn = Configuration.GetValue<string>("TopicArn");
-            AdvertModel dbModel = await _advertStorageService.GetById(model.Id);
-
             using (AmazonSimpleNotificationServiceClient client = new AmazonSimpleNotificationServiceClient())
             {
+                string topicArn = Configuration.GetValue<string>("TopicArn");
+                
+                string dbModelTitle = await _advertStorageService.GetById(model.Id);
+ 
                 AdvertConfirmedMessage message = new AdvertConfirmedMessage
                 {
                     Id = model.Id,
-                    Title = dbModel.Title
+                    Title = dbModelTitle
                 };
+
+                await testMessage(message.ToString());
 
                 var messageJson = JsonConvert.SerializeObject(message);
                 await client.PublishAsync(topicArn, messageJson);
+            }
+        }
+
+        private async Task testMessage(string text)
+        {
+            using (AmazonSimpleNotificationServiceClient client = new AmazonSimpleNotificationServiceClient())
+            {
+                string topicArn = Configuration.GetValue<string>("TopicArn");
+                await client.PublishAsync(topicArn, text);
             }
         }
     }
